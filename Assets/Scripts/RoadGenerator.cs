@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoadGenerator : MonoBehaviour
 {
     public GameObject tilePrefab;
+    public static RoadGenerator instance;
+    public float speed = 0;
 
     private List<GameObject> _tiles = new List<GameObject>();
     private float _maxSpeed = 10f;
-    public float speed = 0;
     private int _maxTileCount = 5;
-
-    public static RoadGenerator instance;
 
     private void Start()
     {
@@ -32,7 +32,7 @@ public class RoadGenerator : MonoBehaviour
         {
             Destroy(_tiles[0]);
             _tiles.RemoveAt(0);
-            CreateNextTile();
+            CreateTile();
         }
     }
     public void StartLevel()
@@ -48,21 +48,24 @@ public class RoadGenerator : MonoBehaviour
             Destroy(_tiles[0]);
             _tiles.RemoveAt(0);
         }
-        for (int i = 0; i < _maxTileCount; i++)
+        for (var i = 0; i < _maxTileCount; i++)
         {
-            CreateNextTile();
+            CreateTile();
         }
+
+        MapGenerator.instance.ResetMaps();
     }
 
-    private void CreateNextTile()
+    private void CreateTile()
     {
         Vector3 pos = Vector3.zero;
+
         if (_tiles.Count > 0)
         {
-            pos = _tiles[_tiles.Count - 1].transform.position + new Vector3(0, 0, 20);
+            pos = _tiles.Last().transform.position + new Vector3(0, 0, 20);
         }
-        GameObject newTile = Instantiate(tilePrefab) as GameObject;
-        newTile.transform.position = pos;
+
+        GameObject newTile = Instantiate(tilePrefab, pos, Quaternion.identity);
         _tiles.Add(newTile);
     }
 }

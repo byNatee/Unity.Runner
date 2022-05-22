@@ -382,12 +382,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6456321997fa2174c80303f257478545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laneOffset: 3
-  obstacleTopPrefab: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
-  obstacleBottomPrefab: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
-  obstacleFullPrefab: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
-  obstacleRampPrefab: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
-  maps: []
+  _laneOffset: 3
+  _mapConfig:
+  - _mapId: 0
+    _mapItemConfigs:
+    - _itemId: 0
+      _mapItem:
+        _obstacle: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
+        _trackPos: -1
+    - _itemId: 1
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+        _trackPos: 1
+  - _mapId: 1
+    _mapItemConfigs:
+    - _itemId: 0
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
+        _trackPos: 0
+    - _itemId: 1
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
+        _trackPos: 1
+  - _mapId: 2
+    _mapItemConfigs:
+    - _itemId: 0
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
+        _trackPos: -1
+    - _itemId: 1
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+        _trackPos: 1
+    - _itemId: 2
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+        _trackPos: 1
+    - _itemId: 3
+      _mapItem:
+        _obstacle: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
+        _trackPos: 0
+  _obstacleTopPrefab: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
+  _obstacleBottomPrefab: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+  _obstacleFullPrefab: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
+  _obstacleRampPrefab: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
 --- !u!4 &159206159
 Transform:
   m_ObjectHideFlags: 0

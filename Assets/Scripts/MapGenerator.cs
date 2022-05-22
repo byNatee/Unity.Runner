@@ -1,195 +1,143 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    private int _itemSpace = 15;
-    private int _itemCountInMap = 5;
-    private int _maxMapCount = 4;
-    private int _mapSpace = 30;
+    [SerializeField] private int _laneOffset = 3;
+    [SerializeField] private List<MapConfig> _mapConfig;
+    [SerializeField] private GameObject _obstacleTopPrefab;
+    [SerializeField] private GameObject _obstacleBottomPrefab;
+    [SerializeField] private GameObject _obstacleFullPrefab;
+    [SerializeField] private GameObject _obstacleRampPrefab;
 
-    public int laneOffset = 3;
+    private const int _maxMapCount = 15;
+    private const int _mapSpace = 20;
 
-    enum TrackPos { Left = -1, Mid = 0, Right = 1};
-
-    public GameObject obstacleTopPrefab;
-    public GameObject obstacleBottomPrefab;
-    public GameObject obstacleFullPrefab;
-    public GameObject obstacleRampPrefab;
+    public enum TrackPos
+    {
+        Left = -1,
+        Mid = 0,
+        Right = 1
+    }
 
     public static MapGenerator instance;
 
-    public List<GameObject> maps = new List<GameObject>();
+    private List<GameObject> _maps = new List<GameObject>();
 
-    struct MapItem
+    [Serializable]
+    public struct MapItem
     {
+        [SerializeField] private GameObject _obstacle;
+        [SerializeField] private TrackPos _trackPos;
+
+        public GameObject Obstacle => _obstacle;
+        public TrackPos TrackPos => _trackPos;
+
         public void SetValue(GameObject obstacle, TrackPos trackPos)
         {
-            this.obstacle = obstacle;
-            this.trackPos = trackPos;
+            _obstacle = obstacle;
+            _trackPos = trackPos;
         }
-
-        public GameObject obstacle;
-        public TrackPos trackPos;
     }
 
     private void Start()
     {
         instance = this;
-        for(int i = 0; i < _maxMapCount; i++)
-        {
-            int rnd = UnityEngine.Random.Range(1, 4);
-
-            if (rnd == 1)
-            {
-                maps.Add(MakeMap1());
-            }
-            if (rnd == 2)
-            {
-                maps.Add(MakeMap2());
-            }
-            if (rnd == 3)
-            {
-                maps.Add(MakeMap3());
-            }
-        }
     }
 
     private void Update()
     {
-        if(RoadGenerator.instance.speed != 0)
+        if (RoadGenerator.instance.speed == 0) return;
+
+        foreach (GameObject map in _maps)
         {
-            foreach (GameObject map in maps)
-            {
-                map.transform.Translate(0, 0, -RoadGenerator.instance.speed * Time.deltaTime);
-            }
+            map.transform.Translate(0, 0, -RoadGenerator.instance.speed * Time.deltaTime);
+        }
 
-            if (maps[0].transform.position.z < -100)
-            {
-                Destroy(maps[0]);
-                maps.RemoveAt(0);
-
-                int rnd = UnityEngine.Random.Range(1, 4);
-
-                if (rnd == 1)
-                {
-                    maps.Add(MakeMap1());
-                }
-                if (rnd == 2)
-                {
-                    maps.Add(MakeMap2());
-                }
-                if (rnd == 3)
-                {
-                    maps.Add(MakeMap3());
-                }
-            }
+        if (_maps[0].transform.position.z < -20)
+        {
+            Destroy(_maps[0]);
+            _maps.RemoveAt(0);
+            CreateRandomMap();
         }
     }
 
-    private GameObject MakeMap1()
+    public void ResetMaps()
     {
-        GameObject result = new GameObject("Map1");
+        while (_maps.Count > 0)
+        {
+            Destroy(_maps[0]);
+            _maps.RemoveAt(0);
+        }
+        for (var i = 0; i < _maxMapCount; i++)
+        {
+            CreateRandomMap();
+        }
+    }
+
+    private void CreateRandomMap()
+    {
+        var config = _mapConfig.FirstOrDefault(item => item.MapId == UnityEngine.Random.Range(0, _mapConfig.Count));
+        if (config != null)
+        {
+            _maps.Add(MakeMap(config));
+        }
+    }
+    private GameObject MakeMap(MapConfig mapConfig)
+    {
+        var result = new GameObject($"Map_{mapConfig.MapId}");
         result.transform.SetParent(transform);
 
-        Vector3 pos = Vector3.zero;
+        var position = Vector3.zero;
 
-        if (maps.Count > 0)
+        if (_maps.Count > 0)
         {
-            pos = maps[maps.Count - 1].transform.position + new Vector3(0, 0, _mapSpace);
+            position = _maps.Last().transform.position + new Vector3(0, 0, _mapSpace);
         }
 
-        MapItem item = new MapItem();
+        var mapItem = new MapItem();
 
-        for(int i = 0; i < _itemCountInMap; i++)
+
+        for (var i = 0; i < mapConfig.MapItemConfigs.Count; i++)
         {
-            item.SetValue(null, TrackPos.Mid);
+            mapItem.SetValue(null, TrackPos.Mid);
 
-            if(i == 2) { item.SetValue(obstacleRampPrefab, TrackPos.Left); }
-            if(i == 3) { item.SetValue(obstacleBottomPrefab, TrackPos.Right); }
-            if(i == 4) { item.SetValue(obstacleBottomPrefab, TrackPos.Right); }
-
-            Vector3 obstaclePos = new Vector3((int)item.trackPos * laneOffset, 0, i * _itemSpace);
-
-            if(item.obstacle != null)
+            var mapItemConfig = mapConfig.MapItemConfigs.FirstOrDefault(item => item.ItemId == i);
+            if (mapItemConfig != null)
             {
-                GameObject go = Instantiate(item.obstacle, obstaclePos, Quaternion.identity);
+                mapItem.SetValue(mapItemConfig.MapItem.Obstacle, mapItemConfig.MapItem.TrackPos);
+
+                var obstaclePos = new Vector3((int)mapItem.TrackPos * _laneOffset, 0, 0);
+
+                var go = Instantiate(mapItem.Obstacle, obstaclePos, Quaternion.identity);
                 go.transform.SetParent(result.transform);
             }
         }
 
-        result.transform.position = pos;
+        result.transform.position = position;
         return result;
     }
 
-    private GameObject MakeMap2()
+    [Serializable]
+    public class MapConfig
     {
-        GameObject result = new GameObject("Map2");
-        result.transform.SetParent(transform);
+        [SerializeField] private int _mapId;
+        [SerializeField] private List<MapItemConfig> _mapItemConfigs;
 
-        Vector3 pos = Vector3.zero;
-
-        if (maps.Count > 0)
-        {
-            pos = maps[maps.Count - 1].transform.position + new Vector3(0, 0, _mapSpace);
-        }
-
-        MapItem item = new MapItem();
-
-        for (int i = 0; i < _itemCountInMap; i++)
-        {
-            item.SetValue(null, TrackPos.Mid);
-
-            if (i == 2) { item.SetValue(obstacleRampPrefab, TrackPos.Mid); }
-            if (i == 3) { item.SetValue(obstacleTopPrefab, TrackPos.Left); }
-            if (i == 4) { item.SetValue(obstacleBottomPrefab, TrackPos.Left); }
-
-            Vector3 obstaclePos = new Vector3((int)item.trackPos * laneOffset, 0, i * _itemSpace);
-
-            if (item.obstacle != null)
-            {
-                GameObject go = Instantiate(item.obstacle, obstaclePos, Quaternion.identity);
-                go.transform.SetParent(result.transform);
-            }
-        }
-
-        result.transform.position = pos;
-        return result;
+        public int MapId => _mapId;
+        public List<MapItemConfig> MapItemConfigs => _mapItemConfigs;
     }
 
-    private GameObject MakeMap3()
+    [Serializable]
+    public class MapItemConfig
     {
-        GameObject result = new GameObject("Map2");
-        result.transform.SetParent(transform);
+        [SerializeField] private int _itemId;
+        [SerializeField] private MapItem _mapItem;
 
-        Vector3 pos = Vector3.zero;
-
-        if (maps.Count > 0)
-        {
-            pos = maps[maps.Count - 1].transform.position + new Vector3(0, 0, _mapSpace);
-        }
-
-        MapItem item = new MapItem();
-
-        for (int i = 0; i < _itemCountInMap; i++)
-        {
-            item.SetValue(null, TrackPos.Mid);
-
-            if (i == 1) { item.SetValue(obstacleTopPrefab, TrackPos.Mid); }
-            if (i == 3) { item.SetValue(obstacleBottomPrefab, TrackPos.Left); }
-
-            Vector3 obstaclePos = new Vector3((int)item.trackPos * laneOffset, 0, i * _itemSpace);
-
-            if (item.obstacle != null)
-            {
-                GameObject go = Instantiate(item.obstacle, obstaclePos, Quaternion.identity);
-                go.transform.SetParent(result.transform);
-            }
-        }
-
-        result.transform.position = pos;
-        return result;
+        public int ItemId => _itemId;
+        public MapItem MapItem => _mapItem;
     }
 }
