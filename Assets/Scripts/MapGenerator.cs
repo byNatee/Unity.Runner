@@ -8,12 +8,8 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private int _laneOffset = 3;
     [SerializeField] private List<MapConfig> _mapConfig;
-    [SerializeField] private GameObject _obstacleTopPrefab;
-    [SerializeField] private GameObject _obstacleBottomPrefab;
-    [SerializeField] private GameObject _obstacleFullPrefab;
-    [SerializeField] private GameObject _obstacleRampPrefab;
 
-    private const int _maxMapCount = 15;
+    private const int _maxMapCount = 10;
     private const int _mapSpace = 20;
 
     public enum TrackPos
