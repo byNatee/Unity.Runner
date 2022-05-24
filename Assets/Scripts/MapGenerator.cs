@@ -7,7 +7,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private int _laneOffset = 3;
-    [SerializeField] private List<MapConfig> _mapConfig;
+    [SerializeField] private List<MapConfig> _mapConfigs;
 
     private const int _maxMapCount = 10;
     private const int _mapSpace = 20;
@@ -76,7 +76,7 @@ public class MapGenerator : MonoBehaviour
 
     private void CreateRandomMap()
     {
-        var config = _mapConfig.FirstOrDefault(item => item.MapId == UnityEngine.Random.Range(0, _mapConfig.Count));
+        var config = _mapConfigs.FirstOrDefault(map => map.MapId == UnityEngine.Random.Range(0, _mapConfigs.Count));
         if (config != null)
         {
             _maps.Add(MakeMap(config));

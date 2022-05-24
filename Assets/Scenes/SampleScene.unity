@@ -254,16 +254,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _laneOffset: 3
-  _mapConfig:
+  _mapConfigs:
   - _mapId: 0
     _mapItemConfigs:
     - _itemId: 0
       _mapItem:
         _obstacle: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
-        _trackPos: -1
+        _trackPos: 0
     - _itemId: 1
       _mapItem:
         _obstacle: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+        _trackPos: -1
+    - _itemId: 2
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
         _trackPos: 1
   - _mapId: 1
     _mapItemConfigs:
@@ -274,20 +278,34 @@ MonoBehaviour:
     - _itemId: 1
       _mapItem:
         _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
+        _trackPos: -1
+    - _itemId: 2
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
         _trackPos: 1
   - _mapId: 2
     _mapItemConfigs:
     - _itemId: 0
       _mapItem:
         _obstacle: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
-        _trackPos: -1
+        _trackPos: 1
     - _itemId: 1
       _mapItem:
-        _obstacle: {fileID: 8756837255276032419, guid: 070a0914e54ee8d41b4cd388ca172813, type: 3}
+        _obstacle: {fileID: 8756837255276032419, guid: 61cd9032ae716fb4c8107cd63ed4f2df, type: 3}
+        _trackPos: -1
+  - _mapId: 3
+    _mapItemConfigs:
+    - _itemId: 0
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
         _trackPos: 1
+    - _itemId: 1
+      _mapItem:
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
+        _trackPos: -1
     - _itemId: 2
       _mapItem:
-        _obstacle: {fileID: 5072073649186545074, guid: 17fcfa1cb5ddb604fa5de984b00f811e, type: 3}
+        _obstacle: {fileID: 8756837255276032419, guid: 4948acb75f0d5474bbb7c8f0d2f27110, type: 3}
         _trackPos: 0
 --- !u!4 &159206159
 Transform:
