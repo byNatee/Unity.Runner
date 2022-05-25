@@ -76,7 +76,7 @@ public class MapGenerator : MonoBehaviour
 
     private void CreateRandomMap()
     {
-        var config = _mapConfigs.FirstOrDefault(map => map.MapId == UnityEngine.Random.Range(0, _mapConfigs.Count));
+        var config = _mapConfigs[UnityEngine.Random.Range(0, _mapConfigs.Count)];
         if (config != null)
         {
             _maps.Add(MakeMap(config));
