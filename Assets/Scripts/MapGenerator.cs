@@ -23,22 +23,6 @@ public class MapGenerator : MonoBehaviour
 
     private List<GameObject> _maps = new List<GameObject>();
 
-    [Serializable]
-    public struct MapItem
-    {
-        [SerializeField] private GameObject _obstacle;
-        [SerializeField] private TrackPos _trackPos;
-
-        public GameObject Obstacle => _obstacle;
-        public TrackPos TrackPos => _trackPos;
-
-        public void SetValue(GameObject obstacle, TrackPos trackPos)
-        {
-            _obstacle = obstacle;
-            _trackPos = trackPos;
-        }
-    }
-
     private void Start()
     {
         instance = this;
@@ -94,21 +78,15 @@ public class MapGenerator : MonoBehaviour
             position = _maps.Last().transform.position + new Vector3(0, 0, _mapSpace);
         }
 
-        var mapItem = new MapItem();
-
-
         for (var i = 0; i < mapConfig.MapItemConfigs.Count; i++)
         {
-            mapItem.SetValue(null, TrackPos.Mid);
 
             var mapItemConfig = mapConfig.MapItemConfigs.FirstOrDefault(item => item.ItemId == i);
             if (mapItemConfig != null)
             {
-                mapItem.SetValue(mapItemConfig.MapItem.Obstacle, mapItemConfig.MapItem.TrackPos);
+                var obstaclePos = new Vector3((int)mapItemConfig.TrackPos * _laneOffset, 0, 0);
 
-                var obstaclePos = new Vector3((int)mapItem.TrackPos * _laneOffset, 0, 0);
-
-                var go = Instantiate(mapItem.Obstacle, obstaclePos, Quaternion.identity);
+                var go = Instantiate(mapItemConfig.ItemPrefab, obstaclePos, Quaternion.identity);
                 go.transform.SetParent(result.transform);
             }
         }
@@ -131,9 +109,11 @@ public class MapGenerator : MonoBehaviour
     public class MapItemConfig
     {
         [SerializeField] private int _itemId;
-        [SerializeField] private MapItem _mapItem;
+        [SerializeField] private GameObject _itemPrefab;
+        [SerializeField] private TrackPos _trackPos;
 
         public int ItemId => _itemId;
-        public MapItem MapItem => _mapItem;
+        public GameObject ItemPrefab => _itemPrefab;
+        public TrackPos TrackPos => _trackPos;
     }
 }
